@@ -31,6 +31,8 @@ ACTIONS = (
     "hyperpet",
     "highfive",
     "spank",
+    "spank1",
+    "spank2",
     "slap",
     "bonk",
     "whip",
@@ -239,6 +241,94 @@ class Fun(commands.Cog):
                     file=discord.File(fp=image_binary, filename="spank.gif"),
                     mention_author=False,
                 )
+
+    @commands.guild_only()
+    @commands.cooldown(rate=3, per=30.0, type=commands.BucketType.user)
+    @check.acl2(check.ACLevel.MEMBER)
+    @commands.command()
+    async def spank1(self, ctx, *, user: discord.Member = None):
+        """Spank someone"""
+        if not await self._is_user_in_channel(ctx, user):
+            await ctx.reply(_(ctx, "You can't do that, they are not in this channel."))
+            return
+
+        if user is None:
+            source = self.bot.user
+            target = ctx.author
+        else:
+            source = ctx.author
+            target = user
+
+        Relation.add(ctx.guild.id, source.id, target.id, "spank")
+
+        async with ctx.typing():
+            target_avatar: Image = await self.get_users_avatar(ctx, target)
+
+            frame_duration: int = 30
+            frames = self.get_spank_frames(target_avatar)
+
+            with BytesIO() as image_binary:
+                frames[0].save(
+                    image_binary,
+                    format="GIF",
+                    save_all=True,
+                    append_images=frames[1:],
+                    duration=frame_duration,
+                    loop=0,
+                    transparency=0,
+                    disposal=2,
+                    optimize=False,
+                )
+                image_binary.seek(0)
+                await ctx.reply(
+                    file=discord.File(fp=image_binary, filename="spank.gif"),
+                    mention_author=False,
+                )
+
+    @commands.guild_only()
+    @commands.cooldown(rate=3, per=30.0, type=commands.BucketType.user)
+    @check.acl2(check.ACLevel.MEMBER)
+    @commands.command()
+    async def spank2(self, ctx, *, user: discord.Member = None):
+        """Spank someone"""
+        if not await self._is_user_in_channel(ctx, user):
+            await ctx.reply(_(ctx, "You can't do that, they are not in this channel."))
+            return
+
+        if user is None:
+            source = self.bot.user
+            target = ctx.author
+        else:
+            source = ctx.author
+            target = user
+
+        Relation.add(ctx.guild.id, source.id, target.id, "spank")
+
+        async with ctx.typing():
+            source_avatar: Image = await self.get_users_avatar(ctx, source)
+            target_avatar: Image = await self.get_users_avatar(ctx, target)
+
+            frames = self.get_spank_frames_figures(source_avatar, target_avatar)
+            frame_duration = 200
+
+            with BytesIO() as image_binary:
+                frames[0].save(
+                    image_binary,
+                    format="GIF",
+                    save_all=True,
+                    append_images=frames[1:],
+                    duration=frame_duration,
+                    loop=0,
+                    transparency=0,
+                    disposal=2,
+                    optimize=False,
+                )
+                image_binary.seek(0)
+                await ctx.reply(
+                    file=discord.File(fp=image_binary, filename="spank.gif"),
+                    mention_author=False,
+                )
+
 
     @commands.guild_only()
     @commands.cooldown(rate=3, per=30.0, type=commands.BucketType.user)
