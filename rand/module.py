@@ -349,7 +349,7 @@ class Rand(commands.Cog):
     @check.acl2(check.ACLevel.EVERYONE)
     @commands.command()
     async def lizard(self, ctx):
-        """Get random image of a bunny"""
+        """Get random image of a lizard"""
         headers = self._get_request_headers()
         async with aiohttp.ClientSession(headers=headers) as session:
             async with session.get(
