@@ -343,6 +343,8 @@ class Rand(commands.Cog):
         rat_idx = random.randint(0, len(OMG_RATS) - 1)
         embed.set_image(url=OMG_RATS[rat_idx])
 
+        await ctx.reply(embed=embed)
+
     @commands.cooldown(rate=5, per=60, type=commands.BucketType.channel)
     @check.acl2(check.ACLevel.EVERYONE)
     @commands.command()
