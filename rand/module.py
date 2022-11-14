@@ -259,6 +259,33 @@ class Rand(commands.Cog):
 
         await ctx.reply(embed=embed)
 
+    @commands.cooldown(rate=5, per=20, type=commands.BucketType.channel)
+    @check.acl2(check.ACLevel.EVERYONE)
+    @commands.command()
+    async def bunny(self, ctx):
+        """Get random image of a bunny"""
+        headers = self._get_request_headers()
+        async with aiohttp.ClientSession(headers=headers) as session:
+            async with session.get(
+                    "https://api.bunnies.io/v2/loop/random/?media=gif"
+            ) as response:
+                if response.status != 200:
+                    return await ctx.reply(
+                        _(ctx, "Command encountered an error (E{code}).").format(
+                            code=response.status
+                        )
+                    )
+
+                json_response = await response.json()
+
+        embed: discord.Embed = utils.discord.create_embed(
+            author=ctx.author,
+            footer="api.bunnies.io",
+        )
+        embed.set_image(url=json_response["media"]["gif"])
+
+        await ctx.reply(embed=embed)
+
     @commands.cooldown(rate=5, per=60, type=commands.BucketType.channel)
     @check.acl2(check.ACLevel.EVERYONE)
     @commands.command()
